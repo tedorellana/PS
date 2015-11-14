@@ -43,7 +43,8 @@ class C_administrarProyecto extends CI_Controller {
 		print_r($this->session->userdata);
 	}
 
-	public function crear_proyecto(){
+	public function crear_proyectoasdasdashdasdjhavsdavshjd(){
+
 		$this->load->view('head');
 		if (isset($this->session->userdata['nombUsuario'])) {			
 			if ($this->session->userdata['fk_idRol']==4) {
