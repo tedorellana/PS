@@ -162,13 +162,37 @@ class c_AdministrarTrabajadores extends CI_Controller {
 
 	public function agregarTrabajadoresAlPozoDelProyecto(){
 		$idProyecto = $this->session->userdata['idPS'];
-
+		//RECUPERA AMBIENTE FANTASMA DEL RPYECTO
 		$idAmbienteFantasma = $this->m_ambiente->getIdAmbienteFantasmaPorTipo($idProyecto);
+		//obtiene pozo de trabajadores del proyecto
 		$idPozoRecuperadoDeTrabajadores = $this->m_ambiente_trabajador->getPozoProyecto($idProyecto,$idAmbienteFantasma[0]['idAmbiente']);
+		//carga data para registro
 		$data = array(
 				'idTrabajador' => $this->input->post('idTraba'),
-				'idAmbiente_actividad' => $idPozoRecuperadoDeTrabajadores[0]['idAmbiente_actividad']
+				//errardo
+				'idAmbiente_actividad' => 50
+				//CORRECTO
+				//'idAmbiente_actividad' => $idPozoRecuperadoDeTrabajadores[0]['idAmbiente_actividad']
 		);
+
+		$this->generaTXTDeRespaldo($_POST['idTraba'],$idPozoRecuperadoDeTrabajadores[0]['idAmbiente_actividad']);
 		$this->m_ambiente_trabajador->agregaTrabajadorAlPozoDelProyecto($data);  
 	}
+
+	public function generaTXTDeRespaldo($trabajador,$pozo){
+		$txt = fopen("E:/update.txt", "a") or die("No se pudo crear el archivo");
+		fwrite($txt, 'SET FOREIGN_KEY_CHECKS=0;');
+		fwrite($txt, "\t");
+		fwrite($txt, 'update t_ambiente_actividad_trabajador set fk_idAmbiente_actividad='.$pozo.' where fk_idTrabajador='.$trabajador.';');			
+		fwrite($txt, "\t");
+		fwrite($txt, 'SET FOREIGN_KEY_CHECKS=1;');
+		fwrite($txt, "\r\n");
+		fclose($txt);
+		print_r("LOS DATOS SE INGRESARON CORRECTAMENTE");
+		fclose($txt);
+
+
+	}
+
+
 }
